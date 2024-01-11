@@ -4,7 +4,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^users$ api/create_user.php [L]
-RewriteRule ^coffee$ api/create_coffee_consumption.php [L]
-RewriteRule ^users/login$ api/login.php [L]
+RewriteRule ^users/(\d+)/drink$ api/create_coffee_consumption.php?id=$1&drink=$2 [QSA,L]
+RewriteRule ^login$ api/login.php [L]
 RewriteRule ^users/logout$ api/logout.php [L]
-RewriteRule ^users$ api/users_list.php [L]
+RewriteRule ^users/(\d+)$ api/getUserData.php?id=$1 [QSA,L]

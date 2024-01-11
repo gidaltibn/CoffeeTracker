@@ -5,16 +5,23 @@ require_once '../app/controllers/AuthController.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $requestData = json_decode(file_get_contents('php://input'), true);
+    $userId = isset($_GET['id']) ? $_GET['id'] : null;
+    $token = isset(getallheaders()['Authorization']) ? getallheaders()['Authorization'] : null;
 
-    if (isset($requestData['user_id']) && isset($requestData['quantity']) && isset($requestData['consumption_date_time'])) {
-        $token = isset(getallheaders()['Authorization']) ? getallheaders()['Authorization'] : null;
-        $userId = $requestData['user_id'];
+    if (isset($requestData['drink']) && !empty($userId) && !empty($token)) {
 
         $authController = new AuthController();
 
-        if ($authController->validateToken($token, $userId)) { 
+        if ($authController->validateToken($token, $userId)) {
             $coffeeController = new CoffeeController();
-            $createdCoffee = $coffeeController->createCoffee($requestData);
+
+            $coffeeData = [
+                'drink' => $requestData['drink'],
+                'user_id' => $userId,
+                'token' => $token
+            ];
+
+            $createdCoffee = $coffeeController->createCoffee($coffeeData);
 
             if ($createdCoffee) {
                 header('Content-Type: application/json');

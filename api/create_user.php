@@ -2,7 +2,6 @@
 
 require_once '../app/models/User.php';
 require_once '../app/controllers/UserController.php';
-require_once '../api/users_list.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 

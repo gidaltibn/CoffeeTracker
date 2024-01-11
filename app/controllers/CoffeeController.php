@@ -2,6 +2,7 @@
 require_once '../app/models/CoffeeConsumption.php';
 require_once '../app/models/Database.php';
 require_once '../app/controllers/AuthController.php';
+require_once '../app/controllers/UserController.php';
 
 class CoffeeController
 {
@@ -18,20 +19,23 @@ class CoffeeController
             $database = new Database();
             $database->getConnection();
 
-            $query = "INSERT INTO coffee_consumption (user_id, consumption_date_time, quantity) VALUES (?, ?, ?)";
+            $query = "INSERT INTO coffee_consumption (user_id, consumption_date_time, quantity) VALUES (?, NOW(), ?)";
             $statement = $database->prepare($query);
 
             $userId = $coffeeData['user_id'];
-            $consumptionDateTime = $coffeeData['consumption_date_time'];
-            $quantity = $coffeeData['quantity'];
+            $quantity = $coffeeData['drink'];
 
-            $statement->bind_param('isi', $userId, $consumptionDateTime, $quantity);
+            $statement->bind_param('ii', $userId, $quantity);
 
             $statement->execute();
             $statement->close();
             $query = '';
             $database->getConnection()->close();
 
+            $userData = new UserController();
+            $userData = $userData->getUserData($userId, $token);
+
+            echo json_encode(['success' => true, 'data' => $userData]);
             return true;
         } catch (Exception $e) {
             return false;

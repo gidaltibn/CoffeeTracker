@@ -73,6 +73,96 @@ class UserController
         }
     }
 
+    public function getUserData($userId, $token)
+    {
+
+        $auth = new AuthController();
+
+        $isValidToken = $auth->validateToken($token, $userId);
+
+        if (!$isValidToken) {
+            echo json_encode(['success' => false, 'message' => 'Opa! Usuário não autenticado']);
+            return false;
+        } else {
+            try {
+                $database = new Database();
+                $database->getConnection();
+
+                $queryUser = "SELECT id, name, email FROM user WHERE id = ?";
+                $statementUser = $database->prepare($queryUser);
+                $statementUser->bind_param('i', $userId);
+                $statementUser->execute();
+                $statementUser->store_result();
+
+                if ($statementUser->num_rows > 0) {
+                    $statementUser->bind_result($id, $name, $email);
+                    $statementUser->fetch();
+
+                    $queryDrinkCounter = "SELECT SUM(quantity) AS drinkCounter FROM coffee_consumption WHERE user_id = ?";
+                    $statementDrinkCounter = $database->prepare($queryDrinkCounter);
+                    $statementDrinkCounter->bind_param('i', $userId);
+                    $statementDrinkCounter->execute();
+                    $statementDrinkCounter->bind_result($drinkCounter);
+                    $statementDrinkCounter->fetch();
+
+                    $userData = [
+                        'id' => $id,
+                        'name' => $name,
+                        'email' => $email,
+                        'drinkCounter' => $drinkCounter,
+                    ];
+
+                    $statementUser->close();
+                    $statementDrinkCounter->close();
+                    $database->closeConnection();
+
+                    return $userData;
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Usuário não encontrado']);
+                    return false;
+                }
+            } catch (Exception $e) {
+                echo $e;
+                return false;
+            }
+        }
+    }
+
+    public function updateUser($userData)
+    {
+        $auth = new AuthController();
+
+        $isValidToken = $auth->validateToken($userData['token'], $userData['user_id']);
+
+        if (!$isValidToken) {
+            echo json_encode(['success' => false, 'message' => 'Opa! Usuário não autenticado']);
+            return false;
+        } else {
+            try {
+                $database = new Database();
+                $database->getConnection();
+
+                $query = "UPDATE user SET name = ?, password = ? WHERE id = ?";
+                $statement = $database->prepare($query);
+
+                $name = $userData['name'];
+                $password = password_hash($userData['password'], PASSWORD_DEFAULT);
+                $userId = $userData['user_id'];
+
+                $statement->bind_param('ssi', $name, $password, $userId);
+
+                $statement->execute();
+                $statement->close();
+                $database->closeConnection();
+
+                return true;
+            } catch (Exception $e) {
+                return false;
+            }
+        }
+    }
+
+
     public function loginUser($email, $password)
     {
 
@@ -88,23 +178,19 @@ class UserController
             $statement->store_result();
 
             if ($statement->num_rows > 0) {
-                // Usuário encontrado, verificar a senha
                 $statement->bind_result($id, $name, $email, $hashedPassword);
                 $statement->fetch();
 
                 if (password_verify($password, $hashedPassword)) {
-                    // Senha correta, gerar e retornar token
                     $authController = new AuthController();
 
                     $token = $authController->generateToken($id);
                     return array("id" => $id, "name" => $name, "email" => $email, "token" => $token);
                 } else {
-                    // Senha incorreta
                     echo json_encode(['success' => false, 'message' => 'Senha incorreta']);
                     return false;
                 }
             } else {
-                // Usuário não encontrado
                 echo json_encode(['success' => false, 'message' => 'Usuário não encontrado']);
                 return false;
             }
@@ -152,10 +238,8 @@ class UserController
             $statement->store_result();
 
             if ($statement->num_rows > 0) {
-                // Usuário já existe
                 return false;
             } else {
-                // Usuário não existe
                 return true;
             }
         } catch (Exception $e) {

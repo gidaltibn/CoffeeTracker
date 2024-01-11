@@ -23,13 +23,14 @@ class AuthController
 
     public function validateToken($token, $userId) {
         $token = str_replace('Bearer ', '', $token);
+        
         try {
             $database = new Database();
             $database->getConnection();
 
             $query = "SELECT user_id FROM tokens WHERE token = ? AND user_id = ?";
             $statement = $database->prepare($query);
-            $statement->bind_param('ss', $token, $userId);
+            $statement->bind_param('si', $token, $userId);
             $statement->execute();
             $statement->store_result();
 
