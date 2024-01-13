@@ -3,8 +3,13 @@ RewriteEngine On
 # Redirecionar todas as requisições para index.php, exceto arquivos e diretórios existentes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^users$ api/create_user.php [L]
-RewriteRule ^users/(\d+)/drink$ api/create_coffee_consumption.php?id=$1&drink=$2 [QSA,L]
-RewriteRule ^login$ api/login.php [L]
+
+RewriteRule ^users/$ api/createUser.php [L]
+RewriteRule ^users/(\d+)/drink$ api/createCoffeeConsumption.php?id=$1&drink=$2 [QSA,L]
+RewriteRule ^users/login$ api/login.php [L]
 RewriteRule ^users/logout$ api/logout.php [L]
 RewriteRule ^users/(\d+)$ api/getUserData.php?id=$1 [QSA,L]
+RewriteRule ^users/(\d+)/daily$ api/getDailyUserConsumption.php?id=$1 [QSA,L]
+RewriteRule ^users$ api/getUsersList.php [QSA,L]
+RewriteRule ^users/dailyRanking$ api/getDailyRanking.php [L]
+RewriteRule ^users/topConsumers$ api/getTopCoffeeConsumersLastXDays.php [L]

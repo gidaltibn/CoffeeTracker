@@ -5,15 +5,15 @@ class CoffeeConsumption
     private int $id = 0;
     private ?User $user = null;
     private string $consumption_date_time = "";
-    private int $quantity = 0;
+    private int $drink = 0;
 
-    public function __construct(int $id, ?User $user, string $consumption_date_time, int $quantity)
+    public function __construct(?User $user = null, string $consumption_date_time = '', int $drink = 0)
     {
-        $this->id = $id;
         $this->user = $user;
         $this->consumption_date_time = $consumption_date_time;
-        $this->quantity = $quantity;
+        $this->drink = $drink;
     }
+
 
     public function getId(): int
     {
@@ -45,14 +45,19 @@ class CoffeeConsumption
         $this->consumption_date_time = $consumption_date_time;
     }
 
-    public function getQuantity(): int
+    public function getDrink(): int
     {
-        return $this->quantity;
+        return $this->drink;
     }
 
-    public function setQuantity(int $quantity): void
+    public function setDrink(int $drink): void
     {
-        $this->quantity = $quantity;
+        $this->drink = $drink;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->getUser()->getId();
     }
 
     public function toArray(): array
@@ -61,7 +66,7 @@ class CoffeeConsumption
             "id" => $this->getId(),
             "user" => ($this->getUser() !== null) ? $this->getUser()->toArray() : null,
             "consumption_date_time" => $this->getConsumptionDateTime(),
-            "quantity" => $this->getQuantity(),
+            "drink" => $this->getDrink(),
         ];
     }
 

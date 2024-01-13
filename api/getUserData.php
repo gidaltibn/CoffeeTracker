@@ -33,10 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'name' => $requestData['name'],
             'password' => $requestData['password'],
             'user_id' => $userId,
-            'token' => $token
         ];
 
-        $updatedUser = $userController->updateUser($userData);
+        $updatedUser = $userController->updateUser($userData, $token);
 
         if ($updatedUser) {
             header('Content-Type: application/json');
@@ -50,6 +49,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'Dados insuficientes para atualizar o usuário']);
+        exit;
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $requestData = json_decode(file_get_contents('php://input'), true);
+    $userId = isset($_GET['id']) ? $_GET['id'] : null;
+    $token = isset(getallheaders()['Authorization']) ? getallheaders()['Authorization'] : null;
+
+    if (!empty($userId) && !empty($token)) {
+        $userController = new UserController();
+        $deletedUser = $userController->deleteUser($userId, $token);
+
+        if ($deletedUser) {
+            header('Content-Type: application/json');
+            exit;
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Falha ao deletar o usuário']);
+            exit;
+        }
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Parâmetros inválidos']);
         exit;
     }
 } else {

@@ -6,6 +6,7 @@ class User
     private string $name = "";
     private string $email = "";
     private string $password = "";
+    private int $drinkCounter = 0;
 
     public function __construct()
     {
@@ -51,12 +52,22 @@ class User
         $this->password = $password;
     }
 
+    public function getDrinkCounter(): int
+    {
+        return $this->drinkCounter;
+    }
+    public function setDrinkCounter(int $drinkCounter): void
+    {
+        $this->drinkCounter = $drinkCounter;
+    }
+
     public function toArray(): array
     {
         return [
             "id" => $this->getId(),
             "name" => $this->getName(),
             "email" => $this->getEmail(),
+            "drinkCounter" => $this->getDrinkCounter(),
         ];
     }
 
