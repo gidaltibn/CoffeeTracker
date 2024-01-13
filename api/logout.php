@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'ID do usuário não informado']);
         exit;
     }
 } else {

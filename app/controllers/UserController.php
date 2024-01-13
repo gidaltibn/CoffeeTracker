@@ -369,6 +369,7 @@ class UserController
             echo json_encode(['success' => $isDeleted, 'message' => 'Usuário deslogado']);
             return $isDeleted;
         } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Erro ao deslogar usuário: ' . $e->getMessage() ]);
             return false;
         }
     }
