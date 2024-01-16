@@ -5,8 +5,14 @@ require_once '../app/models/Database.php';
 require_once '../app/controllers/AuthController.php';
 require_once '../app/controllers/UserController.php';
 
+/**
+ * Classe responsável por controlar as ações relacionadas ao consumo de café, como registrar novos consumos
+ * e obter estatísticas de consumo diário de café para um usuário.
+ */
 class CoffeeController
 {
+
+    //MÉTODO PARA ADICIONAR UM NOVO CONSUMO DE CAFÉ
     public function createCoffee($coffeeData)
     {
         try {
@@ -97,6 +103,7 @@ class CoffeeController
     }
 
 
+    //VERIFICA SE O TOKEN É VÁLIDO
     private function isValidToken($token, $userId)
     {
         $authController = new AuthController();

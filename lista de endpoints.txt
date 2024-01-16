@@ -1,0 +1,146 @@
+CADASTRO DE USUÁRIO
+-url
+/users/
+
+-método
+POST
+
+-entrada
+name, email, password
+
+
+LOGIN
+-url
+/users/login
+
+-método
+POST
+
+-entrada
+email, password
+
+-saída
+userId, name, email, consumer_count, token
+
+
+LOGOUT
+-url
+/users/logout
+
+-método
+POST
+
+-entrada
+userId
+
+
+REGISTRAR CONSUMO
+-url
+/users/userId/drink
+
+-método
+POST
+
+-header
+token
+
+-entrada
+drink
+
+
+ATUALIZAR DADOS DO USUÁRIO
+-url
+/users/userId
+
+-método
+PUT
+
+-header
+token
+
+-entrada
+name, email, password
+
+
+EXCLUIR USUARIO
+-url
+/users/userId
+
+-método
+DELETE
+
+-header
+token
+
+
+CONSULTAR DADOS DO USUÁRIO
+-url
+/users/userId
+
+-método
+GET
+
+-header
+token
+
+-saída
+nome, email, consumer_count
+
+
+LISTAR USUÁRIOS
+-url
+/users?currentePage=(\d)&usersPerPage=(\d)
+
+-método
+GET
+
+-header
+token
+
+-saída
+Array com a lista de usuários
+
+
+EXIBE HISTÓRICO DE CONSUMO DO USUÁRIO EM DETERMINADO DIA
+-url
+/users/userId/daily
+
+-método
+POST
+
+-header
+token
+
+-entrada
+date
+
+-saída
+consumption_day, times
+
+
+EXIBIR MAIOR CONSUMIDOR DE CAFÉ DE DETERMINADO DIA
+-url
+/users/dailyRanking
+
+-método
+POST
+
+-entrada
+date
+
+-saída
+name, drink_counter
+
+
+EXIBIR MAIOR CONSUMIDOR DE CAFÉ EM X DIAS
+-url
+/users/topConsumer
+
+-método
+POST
+
+-entrada
+days
+
+-saída
+name, counter_consumer

@@ -26,11 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $userId = isset($_GET['id']) ? $_GET['id'] : null;
     $token = isset(getallheaders()['Authorization']) ? getallheaders()['Authorization'] : null;
 
-    if (isset($requestData['name']) && isset($requestData['password']) && !empty($token) && !empty($userId)) {
+    if (isset($requestData['name']) && isset($requestData['password']) && isset($requestData['email']) && !empty($token) && !empty($userId)) {
         $userController = new UserController();
 
         $userData = [
             'name' => $requestData['name'],
+            'email' => $requestData['email'],
             'password' => $requestData['password'],
             'user_id' => $userId,
         ];
